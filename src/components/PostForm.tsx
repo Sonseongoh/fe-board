@@ -1,3 +1,4 @@
+// src/components/PostForm.tsx
 import type { FormEvent } from "react";
 import { useState } from "react";
 import type { CreatePostPayload } from "../api/posts";
@@ -5,36 +6,50 @@ import { findBannedWord } from "../utils/findBannedWords";
 
 interface PostFormProps {
   onSubmit: (payload: CreatePostPayload) => Promise<void>;
+  initialValues?: Partial<CreatePostPayload>;
+  submitLabel?: string;
 }
 
-export function PostForm({ onSubmit }: PostFormProps) {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [category, setCategory] =
-    useState<CreatePostPayload["category"]>("NOTICE");
-
+export function PostForm({
+  onSubmit,
+  initialValues,
+  submitLabel,
+}: PostFormProps) {
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [body, setBody] = useState(initialValues?.body ?? "");
+  const [category, setCategory] = useState<CreatePostPayload["category"]>(
+    initialValues?.category ?? "NOTICE"
+  );
   const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>(initialValues?.tags ?? []);
 
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleAddTag = () => {
-    if (!tagInput.trim()) return;
+    setError(null);
+    const trimmed = tagInput.trim();
+    if (!trimmed) return;
+
     if (tags.length >= 5) {
       setError("태그는 최대 5개까지 가능합니다.");
       return;
     }
-    if (tagInput.length > 24) {
+    if (trimmed.length > 24) {
       setError("태그는 24자 이하만 가능합니다.");
       return;
     }
-    if (tags.includes(tagInput)) {
+    if (tags.includes(trimmed)) {
       setError("중복 태그는 사용할 수 없습니다.");
       return;
     }
-    setTags((prev) => [...prev, tagInput]);
+
+    setTags((prev) => [...prev, trimmed]);
     setTagInput("");
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setTags((prev) => prev.filter((t) => t !== tag));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -50,14 +65,15 @@ export function PostForm({ onSubmit }: PostFormProps) {
       return;
     }
 
-    const bad1 = findBannedWord(title);
-    if (bad1) {
-      setError(`제목에 금칙어("${bad1}")가 포함되어 있습니다.`);
+    const badInTitle = findBannedWord(title);
+    if (badInTitle) {
+      setError(`제목에 금칙어("${badInTitle}")가 포함되어 있습니다.`);
       return;
     }
-    const bad2 = findBannedWord(body);
-    if (bad2) {
-      setError(`본문에 금칙어("${bad2}")가 포함되어 있습니다.`);
+
+    const badInBody = findBannedWord(body);
+    if (badInBody) {
+      setError(`본문에 금칙어("${badInBody}")가 포함되어 있습니다.`);
       return;
     }
 
@@ -69,14 +85,18 @@ export function PostForm({ onSubmit }: PostFormProps) {
         category,
         tags,
       });
-      // 성공하면 초기화
-      setTitle("");
-      setBody("");
-      setTags([]);
-      setTagInput("");
+
+      // 작성 폼일 때는 초기화, 수정 폼은 상위에서 처리
+      if (!initialValues) {
+        setTitle("");
+        setBody("");
+        setCategory("NOTICE");
+        setTags([]);
+        setTagInput("");
+      }
     } catch (err) {
       console.error(err);
-      setError("게시글 등록에 실패했습니다.");
+      setError("게시글 처리에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -84,16 +104,19 @@ export function PostForm({ onSubmit }: PostFormProps) {
 
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: 32 }}>
-      <h2>게시글 작성</h2>
+      <h2 style={{ marginBottom: 12 }}>
+        {submitLabel ? submitLabel : "게시글 작성"}
+      </h2>
 
       <div style={{ marginBottom: 12 }}>
         <label>제목</label>
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          style={{ width: "100%" }}
+          style={{ width: "100%", padding: "6px 8px" }}
           required
         />
+        <div style={{ fontSize: 12, color: "#666" }}>{title.length} / 80자</div>
       </div>
 
       <div style={{ marginBottom: 12 }}>
@@ -101,9 +124,12 @@ export function PostForm({ onSubmit }: PostFormProps) {
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
-          style={{ width: "100%", height: 120 }}
+          style={{ width: "100%", height: 120, padding: "6px 8px" }}
           required
         />
+        <div style={{ fontSize: 12, color: "#666" }}>
+          {body.length} / 2000자
+        </div>
       </div>
 
       <div style={{ marginBottom: 12 }}>
@@ -113,6 +139,7 @@ export function PostForm({ onSubmit }: PostFormProps) {
           onChange={(e) =>
             setCategory(e.target.value as CreatePostPayload["category"])
           }
+          style={{ padding: "6px 8px" }}
         >
           <option value="NOTICE">NOTICE</option>
           <option value="QNA">QNA</option>
@@ -122,10 +149,11 @@ export function PostForm({ onSubmit }: PostFormProps) {
 
       <div style={{ marginBottom: 12 }}>
         <label>태그</label>
-        <div style={{ display: "flex", gap: 6 }}>
+        <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
           <input
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
+            style={{ flex: 1, padding: "6px 8px" }}
           />
           <button type="button" onClick={handleAddTag}>
             추가
@@ -133,27 +161,47 @@ export function PostForm({ onSubmit }: PostFormProps) {
         </div>
 
         <div
-          style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}
+          style={{
+            marginTop: 8,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 6,
+          }}
         >
-          {tags.map((t) => (
+          {tags.map((tag) => (
             <span
-              key={t}
+              key={tag}
               style={{
                 padding: "4px 8px",
-                background: "#eee",
-                borderRadius: 4,
+                borderRadius: 12,
+                background: "#e5e7eb",
+                fontSize: 12,
               }}
             >
-              #{t}
+              #{tag}{" "}
+              <button
+                type="button"
+                onClick={() => handleRemoveTag(tag)}
+                style={{
+                  marginLeft: 4,
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                }}
+              >
+                ×
+              </button>
             </span>
           ))}
         </div>
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <p style={{ color: "red", marginBottom: 8, fontSize: 13 }}>{error}</p>
+      )}
 
       <button type="submit" disabled={loading}>
-        {loading ? "등록 중..." : "등록하기"}
+        {loading ? "처리 중..." : submitLabel ?? "등록하기"}
       </button>
     </form>
   );

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { Post } from "../types/post";
 import type { TableColumnConfig } from "../types/table";
 import { useTableColumns } from "../hooks/useTableColumns";
@@ -16,6 +17,8 @@ interface PostTableProps {
   error: string | null;
   nextCursor: string | null;
   onLoadMore: () => void;
+  onEdit: (post: Post) => void;
+  onDelete: (post: Post) => void;
 }
 
 export function PostTable({
@@ -24,9 +27,40 @@ export function PostTable({
   error,
   nextCursor,
   onLoadMore,
+  onEdit,
+  onDelete,
 }: PostTableProps) {
   const { columns, handleToggleColumn, startResize } =
     useTableColumns(DEFAULT_COLUMNS);
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // 무한 스크롤
+  useEffect(() => {
+    if (!nextCursor) return;
+    const target = sentinelRef.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && !loading) {
+          onLoadMore();
+        }
+      },
+      {
+        root: null,
+        rootMargin: "0px 0px 200px 0px",
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [nextCursor, loading, onLoadMore]);
 
   return (
     <div>
@@ -81,7 +115,6 @@ export function PostTable({
                   }}
                 >
                   {col.label}
-                  {/* 리사이즈 핸들 */}
                   <div
                     onMouseDown={(e) => startResize(e, col.key)}
                     style={{
@@ -126,8 +159,13 @@ export function PostTable({
                         new Date(post.createdAt).toLocaleString()}
                       {key === "actions" && (
                         <>
-                          <button style={{ marginRight: 4 }}>수정</button>
-                          <button>삭제</button>
+                          <button
+                            style={{ marginRight: 4 }}
+                            onClick={() => onEdit(post)}
+                          >
+                            수정
+                          </button>
+                          <button onClick={() => onDelete(post)}>삭제</button>
                         </>
                       )}
                     </td>
@@ -138,11 +176,9 @@ export function PostTable({
         </tbody>
       </table>
 
-      {nextCursor && !loading && (
-        <button onClick={onLoadMore} style={{ marginTop: 12 }}>
-          더 불러오기
-        </button>
-      )}
+      {/* 무한 스크롤 sentinel */}
+      <div ref={sentinelRef} style={{ height: 1 }} />
+
       {loading && posts.length > 0 && <p>더 불러오는 중...</p>}
     </div>
   );

@@ -8,8 +8,6 @@ export interface FetchPostsParams {
   category?: PostCategory | null;
   sort?: "title" | "createdAt";
   order?: "asc" | "desc";
-  from?: string; // ISO string
-  to?: string; // ISO string
 }
 
 export interface CreatePostPayload {
@@ -28,8 +26,6 @@ export async function fetchPosts(params: FetchPostsParams = {}) {
   if (params.category) searchParams.set("category", params.category);
   if (params.sort) searchParams.set("sort", params.sort);
   if (params.order) searchParams.set("order", params.order);
-  if (params.from) searchParams.set("from", params.from);
-  if (params.to) searchParams.set("to", params.to);
 
   const qs = searchParams.toString();
   const path = qs ? `/posts?${qs}` : "/posts";
@@ -41,5 +37,27 @@ export async function createPost(payload: CreatePostPayload) {
   return apiRequest<Post>("/posts", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+//수정
+export async function updatePost(id: string, payload: CreatePostPayload) {
+  return apiRequest<Post>(`/posts/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+//삭제
+export async function deletePost(id: string) {
+  return apiRequest<void>(`/posts/${id}`, {
+    method: "DELETE",
+  });
+}
+
+//단일 조회
+export async function fetchPost(id: string) {
+  return apiRequest<Post>(`/posts/${id}`, {
+    method: "GET",
   });
 }

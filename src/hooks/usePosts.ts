@@ -50,6 +50,7 @@ export function usePosts({ initialLimit = 20 }: UsePostsOptions = {}) {
 
   //  다음 페이지 로딩
   const loadMore = useCallback(async () => {
+    // 다음 커서 없거나 이미 로딩 중이면 막기
     if (!nextCursor || loading) return;
 
     setLoading(true);
@@ -58,14 +59,20 @@ export function usePosts({ initialLimit = 20 }: UsePostsOptions = {}) {
     try {
       const res = await fetchPosts({
         limit: initialLimit,
-        nextCursor: null,
+        nextCursor,
         sort,
         order,
         search: search || undefined,
         category: category === "ALL" ? undefined : category,
       });
 
-      setPosts((prev) => [...prev, ...res.items]);
+      setPosts((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id));
+
+        const newItems = res.items.filter((p) => !existingIds.has(p.id));
+        return [...prev, ...newItems];
+      });
+
       setNextCursor(res.nextCursor);
     } catch (err: unknown) {
       console.error(err);
