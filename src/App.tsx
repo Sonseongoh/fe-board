@@ -6,6 +6,7 @@ import { PostEditPage } from "./pages/PostEditPage";
 import { PostDetailPage } from "./pages/PostDetailPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ChartsPage } from "./pages/ChartsPage";
 
 export function App() {
   return (
@@ -18,6 +19,7 @@ export function App() {
           <Route path="/posts/new" element={<PostCreatePage />} />
           <Route path="/posts/:id" element={<PostDetailPage />} />
           <Route path="/posts/:id/edit" element={<PostEditPage />} />
+          <Route path="/charts" element={<ChartsPage />} />
 
           <Route path="/" element={<Navigate to="/posts" replace />} />
         </Routes>

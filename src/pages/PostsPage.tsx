@@ -4,6 +4,7 @@ import { usePosts } from "../hooks/usePosts";
 import { deletePost } from "../api/posts";
 import type { Post } from "../types/post";
 import { toast } from "react-toastify";
+import { Button } from "../components/ui/Button";
 
 export function PostsPage() {
   const navigate = useNavigate();
@@ -35,27 +36,8 @@ export function PostsPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1>게시판</h1>
+      <h1 style={{ textAlign: "center" }}>게시판</h1>
 
-      {/* 새 글 작성 버튼 */}
-      <div style={{ marginBottom: 16 }}>
-        <button
-          onClick={() => navigate("/posts/new")}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 4,
-            border: "1px solid #ddd",
-            background: "#2563eb",
-            color: "#fff",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          새 글 작성
-        </button>
-      </div>
-
-      {/* 검색 / 필터 / 정렬 */}
       <div
         style={{
           display: "flex",
@@ -103,6 +85,15 @@ export function PostsPage() {
           <option value="desc">내림차순</option>
           <option value="asc">오름차순</option>
         </select>
+        <div style={{ marginLeft: "auto" }}>
+          <Button
+            onClick={() => navigate("/posts/new")}
+            size="md"
+            variant="primary"
+          >
+            새 글 작성
+          </Button>
+        </div>
       </div>
 
       <PostTable

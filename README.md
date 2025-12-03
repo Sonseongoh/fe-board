@@ -1,73 +1,103 @@
-# React + TypeScript + Vite
+## 🚀 프로젝트 실행 방법
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 1. 패키지 설치
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. 개발 서버 실행
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+## 🛠 기술 스택 (Tech Stack)
+
+### **Frontend**
+
+- React 18
+- React Router DOM
+- TypeScript
+- Recharts
+- React Toastify
+
+---
+
+## 주요 구현 기능 요약
+
+# 1) 게시판 기능
+
+### 게시글 목록
+
+- 검색 기능
+- 카테고리 필터
+- 정렬 기능
+- **무한 스크롤 기반 페이지네이션**
+- 게시글 열람 / 수정 / 삭제
+
+### 글 작성
+
+- 제목 / 본문 / 카테고리 / 태그 입력
+- **금칙어 검사 기능** (제목/본문/태그 모두)
+- 태그 최대 5개, 24자 제한
+- 태그 중복 방지
+- React-Toastify 알림
+
+### 글 상세보기
+
+- 제목 / 본문 / 태그 / 작성일
+- 삭제 / 수정 기능 통합 제공
+
+### ✔ 글 수정
+
+- 기존 데이터 자동 채움
+- 수정 성공 시 Toast
+
+---
+
+# 2) 데이터 시각화 대시보드
+
+## (1) 인기 스낵 브랜드
+
+- Bar Chart
+- Donut Chart
+
+## (2) Weekly Mood Trend
+
+- 주차별 Bar Chart
+- 전체 요약 Donut Chart
+
+## (3) Stacked Charts
+
+데이터:
+
+- `/mock/weekly-mood-trend`
+- `/mock/weekly-workout-trend`
+
+구현:
+
+- Stacked Bar Chart
+- Stacked Area Chart
+- 항목별 비율(%) 누적 표현
+
+## (4) Multi-Line Chart (핵심 요구사항)
+
+데이터:
+
+- `/mock/coffee-consumption`
+- `/mock/snack-impact`
+
+구현 기능:
+
+- 실선: 문제지표 (bugs / meetingsMissed)
+- 점선: 평가지표 (productivity / morale)
+- 동일 팀은 동일 색상 유지
+- Circle/Square Dot 마커 형태 구분
+- X축: 커피잔수 / 스낵수
+- Y축 좌우 분리
+- **Custom Tooltip (해당 팀 데이터만 표시)**
+- **범례에서 팀 보이기/숨기기 가능**
+- **범례에서 색상 변경 가능**
+
+---

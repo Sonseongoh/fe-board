@@ -29,13 +29,9 @@ export function PostEditPage() {
       try {
         const data = await fetchPost(id);
         setPost(data);
-      } catch (err: unknown) {
+      } catch (err) {
         console.error(err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "게시글 정보를 불러오지 못했습니다."
-        );
+        setError("게시글 정보를 불러오지 못했습니다.");
       } finally {
         setLoading(false);
       }
@@ -51,39 +47,19 @@ export function PostEditPage() {
     navigate("/posts");
   };
 
-  if (loading) {
-    return (
-      <div style={{ padding: 24 }}>
-        <p>로딩중...</p>
-      </div>
-    );
-  }
-
-  if (error || !post) {
-    return (
-      <div style={{ padding: 24 }}>
-        <p style={{ color: "red" }}>{error ?? "게시글을 찾을 수 없습니다."}</p>
-        <button onClick={() => navigate("/posts")}>목록으로</button>
-      </div>
-    );
-  }
+  if (loading) return <p>로딩중...</p>;
+  if (error || !post) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div style={{ padding: 24 }}>
-      <h1>게시글 수정</h1>
+      <h1 style={{ textAlign: "center" }}>게시글 수정</h1>
+
       <PostForm
         onSubmit={handleUpdate}
-        initialValues={{
-          title: post.title,
-          body: post.body,
-          category: post.category,
-          tags: post.tags,
-        }}
-        submitLabel="수정하기"
+        onCancel={() => navigate("/posts")}
+        initialValues={post}
+        submitLabel="수정"
       />
-      <button onClick={() => navigate("/posts")} style={{ marginTop: 8 }}>
-        취소
-      </button>
     </div>
   );
 }

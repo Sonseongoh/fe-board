@@ -15,8 +15,12 @@ export function PostCreatePage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1>새 글 작성</h1>
-      <PostForm onSubmit={handleCreate} submitLabel="등록하기" />
+      <h1 style={{ textAlign: "center" }}>새 글 작성</h1>
+      <PostForm
+        onSubmit={handleCreate}
+        onCancel={() => navigate("/posts")}
+        submitLabel="등록하기"
+      />
     </div>
   );
 }

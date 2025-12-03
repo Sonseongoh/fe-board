@@ -3,15 +3,18 @@ import { useState } from "react";
 import type { CreatePostPayload } from "../api/posts";
 import { findBannedWord } from "../utils/findBannedWords";
 import { toast } from "react-toastify";
+import { Button } from "./ui/Button";
 
 interface PostFormProps {
   onSubmit: (payload: CreatePostPayload) => Promise<void>;
+  onCancel: () => void;
   initialValues?: Partial<CreatePostPayload>;
   submitLabel?: string;
 }
 
 export function PostForm({
   onSubmit,
+  onCancel,
   initialValues,
   submitLabel,
 }: PostFormProps) {
@@ -35,7 +38,6 @@ export function PostForm({
       toast.error(`태그에 금칙어("${bad}")가 포함되어 있습니다.`);
       return;
     }
-
     if (tags.length >= 5) {
       toast.error("태그는 최대 5개까지 가능합니다.");
       return;
@@ -92,14 +94,8 @@ export function PostForm({
 
     setLoading(true);
     try {
-      await onSubmit({
-        title,
-        body,
-        category,
-        tags,
-      });
+      await onSubmit({ title, body, category, tags });
 
-      // 작성 폼일 때는 초기화, 수정 폼은 상위에서 처리
       if (!initialValues) {
         setTitle("");
         setBody("");
@@ -117,10 +113,7 @@ export function PostForm({
 
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: 32 }}>
-      <h2 style={{ marginBottom: 12 }}>
-        {submitLabel ? submitLabel : "게시글 작성"}
-      </h2>
-
+      {/* 제목 */}
       <div style={{ marginBottom: 12 }}>
         <label>제목</label>
         <input
@@ -132,12 +125,18 @@ export function PostForm({
         <div style={{ fontSize: 12, color: "#666" }}>{title.length} / 80자</div>
       </div>
 
+      {/* 본문 */}
       <div style={{ marginBottom: 12 }}>
         <label>본문</label>
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
-          style={{ width: "100%", height: 120, padding: "6px 8px" }}
+          style={{
+            width: "100%",
+            height: 120,
+            padding: "6px 8px",
+            resize: "none",
+          }}
           required
         />
         <div style={{ fontSize: 12, color: "#666" }}>
@@ -145,6 +144,7 @@ export function PostForm({
         </div>
       </div>
 
+      {/* 카테고리 */}
       <div style={{ marginBottom: 12 }}>
         <label>카테고리</label>
         <select
@@ -160,6 +160,7 @@ export function PostForm({
         </select>
       </div>
 
+      {/* 태그 + 글자수 카운트 추가 */}
       <div style={{ marginBottom: 12 }}>
         <label>태그</label>
         <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
@@ -168,9 +169,25 @@ export function PostForm({
             onChange={(e) => setTagInput(e.target.value)}
             style={{ flex: 1, padding: "6px 8px" }}
           />
-          <button type="button" onClick={handleAddTag}>
+          <Button
+            variant="secondary"
+            size="sm"
+            type="button"
+            onClick={handleAddTag}
+          >
             추가
-          </button>
+          </Button>
+        </div>
+
+        <div
+          style={{
+            fontSize: 12,
+            color: "#666",
+            marginTop: 4,
+            textAlign: "right",
+          }}
+        >
+          {tagInput.length} / 24자
         </div>
 
         <div
@@ -213,9 +230,23 @@ export function PostForm({
         <p style={{ color: "red", marginBottom: 8, fontSize: 13 }}>{error}</p>
       )}
 
-      <button type="submit" disabled={loading}>
-        {loading ? "처리 중..." : submitLabel ?? "등록하기"}
-      </button>
+      {/* 버튼 영역 */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginTop: 12,
+          justifyContent: "center",
+        }}
+      >
+        <Button variant="primary" type="submit" disabled={loading}>
+          {loading ? "처리 중..." : submitLabel ?? "등록하기"}
+        </Button>
+
+        <Button variant="danger" type="button" onClick={onCancel}>
+          취소하기
+        </Button>
+      </div>
     </form>
   );
 }

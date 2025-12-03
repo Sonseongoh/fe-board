@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchPost, deletePost } from "../api/posts";
 import type { Post } from "../types/post";
+import { Button } from "../components/ui/Button";
 
 export function PostDetailPage() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export function PostDetailPage() {
     return (
       <div style={{ padding: 24 }}>
         <p style={{ color: "red" }}>{error ?? "게시글을 찾을 수 없습니다."}</p>
-        <button onClick={() => navigate("/posts")}>목록으로</button>
+        <Button onClick={() => navigate("/posts")}>목록으로</Button>
       </div>
     );
   }
@@ -69,9 +70,9 @@ export function PostDetailPage() {
   return (
     <div style={{ padding: 24, maxWidth: 800, margin: "0 auto" }}>
       <div style={{ marginBottom: 16 }}>
-        <Link to="/posts" style={{ fontSize: 14 }}>
-          ← 목록으로
-        </Link>
+        <Button variant="outline" size="sm" onClick={() => navigate("/posts")}>
+          목록으로
+        </Button>
       </div>
 
       <h1 style={{ marginBottom: 8 }}>{post.title}</h1>
@@ -129,30 +130,15 @@ export function PostDetailPage() {
       </div>
 
       <div style={{ display: "flex", gap: 8 }}>
-        <button
+        <Button
           onClick={() => navigate(`/posts/${post.id}/edit`)}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 4,
-            border: "1px solid #ddd",
-            cursor: "pointer",
-          }}
+          variant="secondary"
         >
           수정
-        </button>
-        <button
-          onClick={handleDelete}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 4,
-            border: "1px solid #fca5a5",
-            background: "#fee2e2",
-            color: "#b91c1c",
-            cursor: "pointer",
-          }}
-        >
+        </Button>
+        <Button variant="danger" onClick={handleDelete}>
           삭제
-        </button>
+        </Button>
       </div>
     </div>
   );

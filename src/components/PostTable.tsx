@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { Post } from "../types/post";
 import type { TableColumnConfig } from "../types/table";
 import { useTableColumns } from "../hooks/useTableColumns";
+import { Button } from "./ui/Button";
 
 const DEFAULT_COLUMNS: TableColumnConfig[] = [
   { key: "title", label: "제목", visible: true, width: 250 },
@@ -178,13 +179,21 @@ export function PostTable({
                         new Date(post.createdAt).toLocaleString()}
                       {key === "actions" && (
                         <>
-                          <button
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             style={{ marginRight: 4 }}
                             onClick={() => onEdit(post)}
                           >
                             수정
-                          </button>
-                          <button onClick={() => onDelete(post)}>삭제</button>
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => onDelete(post)}
+                          >
+                            삭제
+                          </Button>
                         </>
                       )}
                     </td>
