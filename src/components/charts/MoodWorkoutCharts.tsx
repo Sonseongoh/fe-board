@@ -38,7 +38,7 @@ export function MoodWorkoutCharts({
     <>
       {/* 주간 기분 트렌드 - 바 차트 & 도넛 차트 */}
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ marginBottom: 8 }}>/mock/weekly-mood-trend</h2>
+        <h2 style={{ marginBottom: 8 }}>주간 기분 분포</h2>
         <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
           주간 기분 분포 – 주차별 바 차트 & 전체 비율 도넛 차트
         </p>
@@ -103,7 +103,7 @@ export function MoodWorkoutCharts({
 
       {/*주간 기분 트렌드 - 스택형 바 / 면적 차트 */}
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ marginBottom: 8 }}>/mock/weekly-mood-trend – Stacked</h2>
+        <h2 style={{ marginBottom: 8 }}>주간 기분 분포-스택,면적</h2>
         <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
           happy / tired / stressed 비율을 누적(stacked) 형태로 표현한 차트
         </p>
@@ -188,9 +188,7 @@ export function MoodWorkoutCharts({
 
       {/* 주간 운동 트렌드 - 스택형 바 / 면적 차트 */}
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ marginBottom: 8 }}>
-          /mock/weekly-workout-trend – Stacked
-        </h2>
+        <h2 style={{ marginBottom: 8 }}>주간 운동 트렌드-스택,면적</h2>
         <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
           running / cycling / stretching 비율을 누적(stacked) 형태로 표현한 차트
         </p>

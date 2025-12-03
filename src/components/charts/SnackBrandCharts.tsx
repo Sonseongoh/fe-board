@@ -28,7 +28,7 @@ interface SnackBrandChartsProps {
 export function SnackBrandCharts({ data }: SnackBrandChartsProps) {
   return (
     <section style={{ marginBottom: 32 }}>
-      <h2 style={{ marginBottom: 8 }}>/mock/popular-snack-brands</h2>
+      <h2 style={{ marginBottom: 8 }}>스낵 브랜드별 선호도</h2>
       <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
         스낵 브랜드별 선호도 – 바 차트 & 도넛 차트
       </p>

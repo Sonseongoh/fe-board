@@ -87,8 +87,9 @@ export function ChartsPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1 style={{ marginBottom: 16 }}>데이터 시각화 대시보드</h1>
-
+      <h1 style={{ marginBottom: 16, textAlign: "center" }}>
+        데이터 시각화 대시보드
+      </h1>
       {loading && <p>로딩중...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 

@@ -263,7 +263,9 @@ export function ProductivityCharts({
     <>
       {/* 커피 소비 vs 버그/생산성 – 멀티라인 차트 */}
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ marginBottom: 8 }}>/mock/coffee-consumption</h2>
+        <h2 style={{ marginBottom: 8 }}>
+          커피 섭취량에 따른 팀별 버그 수 및 생산성
+        </h2>
         <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
           커피 섭취량에 따른 팀별 버그 수(왼쪽 Y) 및 생산성(오른쪽 Y)
         </p>
@@ -367,7 +369,9 @@ export function ProductivityCharts({
 
       {/* 스낵 섭취 vs 회의불참/사기 – 멀티라인 차트 */}
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ marginBottom: 8 }}>/mock/snack-impact</h2>
+        <h2 style={{ marginBottom: 8 }}>
+          스낵 섭취량에 따른 부서별 회의 불참 및 사기
+        </h2>
         <p style={{ marginBottom: 8, color: "#555", fontSize: 14 }}>
           스낵 섭취량에 따른 부서별 회의 불참(왼쪽 Y) 및 사기(오른쪽 Y)
         </p>
