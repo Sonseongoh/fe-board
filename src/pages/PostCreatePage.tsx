@@ -19,7 +19,7 @@ export function PostCreatePage() {
       <PostForm
         onSubmit={handleCreate}
         onCancel={() => navigate("/posts")}
-        submitLabel="등록하기"
+        submitLabel="등록"
       />
     </div>
   );

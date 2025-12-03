@@ -240,11 +240,11 @@ export function PostForm({
         }}
       >
         <Button variant="primary" type="submit" disabled={loading}>
-          {loading ? "처리 중..." : submitLabel ?? "등록하기"}
+          {loading ? "처리 중..." : submitLabel ?? "등록"}
         </Button>
 
         <Button variant="danger" type="button" onClick={onCancel}>
-          취소하기
+          취소
         </Button>
       </div>
     </form>
