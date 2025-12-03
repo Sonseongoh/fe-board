@@ -19,6 +19,7 @@ interface PostTableProps {
   onLoadMore: () => void;
   onEdit: (post: Post) => void;
   onDelete: (post: Post) => void;
+  onOpen: (post: Post) => void;
 }
 
 export function PostTable({
@@ -29,6 +30,7 @@ export function PostTable({
   onLoadMore,
   onEdit,
   onDelete,
+  onOpen,
 }: PostTableProps) {
   const { columns, handleToggleColumn, startResize } =
     useTableColumns(DEFAULT_COLUMNS);
@@ -152,7 +154,24 @@ export function PostTable({
                         borderRight: "2px solid #eee",
                       }}
                     >
-                      {key === "title" && post.title}
+                      {key === "title" && (
+                        <button
+                          type="button"
+                          onClick={() => onOpen(post)}
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                            border: "none",
+                            background: "none",
+                            color: "#2563eb",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {post.title}
+                        </button>
+                      )}
                       {key === "category" && post.category}
                       {key === "tags" && post.tags.join(", ")}
                       {key === "createdAt" &&
@@ -176,7 +195,6 @@ export function PostTable({
         </tbody>
       </table>
 
-      {/* 무한 스크롤 sentinel */}
       <div ref={sentinelRef} style={{ height: 1 }} />
 
       {loading && posts.length > 0 && <p>더 불러오는 중...</p>}

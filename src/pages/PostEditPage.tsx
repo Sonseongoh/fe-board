@@ -4,6 +4,7 @@ import { PostForm } from "../components/PostForm";
 import { fetchPost, updatePost } from "../api/posts";
 import type { Post } from "../types/post";
 import type { CreatePostPayload } from "../api/posts";
+import { toast } from "react-toastify";
 
 export function PostEditPage() {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ export function PostEditPage() {
   const handleUpdate = async (payload: CreatePostPayload) => {
     if (!id) return;
     await updatePost(id, payload);
+    toast.success("수정되었습니다!");
     navigate("/posts");
   };
 

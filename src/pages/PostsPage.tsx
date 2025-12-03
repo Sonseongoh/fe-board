@@ -3,6 +3,7 @@ import { PostTable } from "../components/PostTable";
 import { usePosts } from "../hooks/usePosts";
 import { deletePost } from "../api/posts";
 import type { Post } from "../types/post";
+import { toast } from "react-toastify";
 
 export function PostsPage() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export function PostsPage() {
     const ok = window.confirm("정말 삭제하시겠습니까?");
     if (!ok) return;
     await deletePost(post.id);
+    toast.success("삭제되었습니다!");
     await loadInitial();
   };
 
@@ -111,6 +113,7 @@ export function PostsPage() {
         onLoadMore={loadMore}
         onEdit={(post) => navigate(`/posts/${post.id}/edit`)}
         onDelete={handleDelete}
+        onOpen={(post) => navigate(`/posts/${post.id}`)}
       />
     </div>
   );

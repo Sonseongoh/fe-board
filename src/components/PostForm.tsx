@@ -1,8 +1,8 @@
-// src/components/PostForm.tsx
 import type { FormEvent } from "react";
 import { useState } from "react";
 import type { CreatePostPayload } from "../api/posts";
 import { findBannedWord } from "../utils/findBannedWords";
+import { toast } from "react-toastify";
 
 interface PostFormProps {
   onSubmit: (payload: CreatePostPayload) => Promise<void>;
@@ -27,20 +27,25 @@ export function PostForm({
   const [loading, setLoading] = useState(false);
 
   const handleAddTag = () => {
-    setError(null);
     const trimmed = tagInput.trim();
     if (!trimmed) return;
 
+    const bad = findBannedWord(trimmed);
+    if (bad) {
+      toast.error(`태그에 금칙어("${bad}")가 포함되어 있습니다.`);
+      return;
+    }
+
     if (tags.length >= 5) {
-      setError("태그는 최대 5개까지 가능합니다.");
+      toast.error("태그는 최대 5개까지 가능합니다.");
       return;
     }
     if (trimmed.length > 24) {
-      setError("태그는 24자 이하만 가능합니다.");
+      toast.error("태그는 24자 이하만 가능합니다.");
       return;
     }
     if (tags.includes(trimmed)) {
-      setError("중복 태그는 사용할 수 없습니다.");
+      toast.error("중복 태그는 사용할 수 없습니다.");
       return;
     }
 
@@ -67,14 +72,22 @@ export function PostForm({
 
     const badInTitle = findBannedWord(title);
     if (badInTitle) {
-      setError(`제목에 금칙어("${badInTitle}")가 포함되어 있습니다.`);
+      toast.error(`제목에 금칙어 '${badInTitle}'가 포함되어 있습니다.`);
       return;
     }
 
     const badInBody = findBannedWord(body);
     if (badInBody) {
-      setError(`본문에 금칙어("${badInBody}")가 포함되어 있습니다.`);
+      toast.error(`본문에 금칙어 '${badInBody}'가 포함되어 있습니다.`);
       return;
+    }
+
+    for (const tag of tags) {
+      const bad = findBannedWord(tag);
+      if (bad) {
+        toast.error(`태그("${tag}")에 금칙어("${bad}")가 포함되어 있습니다.`);
+        return;
+      }
     }
 
     setLoading(true);
