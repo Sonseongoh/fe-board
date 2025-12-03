@@ -12,6 +12,10 @@ npm install
 npm run dev
 ```
 
+### 3. 차트 확인
+
+http://localhost:5173/charts 페이지에서 확인 가능
+
 ## 🛠 기술 스택 (Tech Stack)
 
 ### **Frontend**
